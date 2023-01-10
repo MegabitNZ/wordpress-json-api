@@ -5,7 +5,7 @@ Controller description: Comment/trackback submission methods
 */
 
 class JSON_API_Respond_Controller {
-  
+
   function submit_comment() {
     global $json_api;
     nocache_headers();
@@ -21,42 +21,42 @@ class JSON_API_Respond_Controller {
     $pending = new JSON_API_Comment();
     return $pending->handle_submission();
   }
- 
-	
+
+
 	public function register_typeform(){
 
-	global $json_api, $WishListMemberInstance;	  
+	global $json_api, $WishListMemberInstance;
 
 	$inputJSON = file_get_contents('php://input');
 $json_input= json_decode( $inputJSON, TRUE ); //convert JSON into array
 $data_array = $json_input;
-	
-	
+
+
 //echo '<pre>';
 //print_r($data_array['form_response']['definition']['fields']);
 //echo '</pre>';
-	
+
 //echo '<pre>';
 //print_r($data_array['form_response']['answers']);
 //echo '</pre>';
-		
-	
-	
+
+
+
 	foreach($data_array['form_response']['answers'] as $k){
-		
+
 		if($k['field']['id']==56083034) $username= sanitize_user( strtolower(str_replace(' ', '.', $k['text'])));
 		elseif($k['field']['id']==56083040) $email= sanitize_email($k['email']);
-		
+
 	}
-		
-	
-               				
-				while(username_exists($username)){		        
+
+
+
+				while(username_exists($username)){
 				$i++;
-				$username = $username.'.'.$i;			     
-	
+				$username = $username.'.'.$i;
+
 					}
- 
+
  if ($json_api->query->display_name) $display_name = sanitize_text_field( $json_api->query->display_name );
 
 $user_pass = sanitize_text_field( $_REQUEST['user_pass'] );
@@ -70,14 +70,14 @@ $invalid_usernames = array( 'admin' );
 	if ( !validate_username( $username ) || in_array( $username, $invalid_usernames ) ) {
 
   $json_api->error("Username is invalid.");
-  
+
         }
 
     elseif ( username_exists( $username ) ) {
 
     $json_api->error("Username already exists.");
 
-           }			
+           }
 
 	else{
 
@@ -89,7 +89,7 @@ $invalid_usernames = array( 'admin' );
 
 	 $json_api->error("E-mail address is already in use.");
 
-          }			
+          }
 
 else {
 
@@ -112,9 +112,9 @@ $allowed_params = array('user_login', 'user_email', 'user_pass', 'display_name',
 
 
 foreach($_REQUEST as $field => $value){
-		
+
 	if( in_array($field, $allowed_params) ) $user[$field] = trim(sanitize_text_field($value));
-	
+
     }
 
 
@@ -123,14 +123,14 @@ $user_id = 	register_new_user( $username, $email );
 
 /*
 if( isset($_REQUEST['user_pass']) && $_REQUEST['notify']=='no') {
-	$notify = '';	
+	$notify = '';
   }elseif($_REQUEST['notify']!='no') $notify = $_REQUEST['notify'];
 
 */
-//if($user_id) wp_new_user_notification( $user_id, '',$notify );  
+//if($user_id) wp_new_user_notification( $user_id, '',$notify );
 
 			}
-		} 
+		}
 
 if($user_id && $reference)  update_user_meta(  $user_id, 'reference', $reference);
 
@@ -139,11 +139,11 @@ if($user_id && $reference)  update_user_meta(  $user_id, 'reference', $reference
 
 	$cookie = wp_generate_auth_cookie($user_id, $expiration, 'logged_in');
 
- return array( 
-          "cookie" => $cookie,	
-		  "user_id" => $user_id	
-		  ); 		  
+ return array(
+          "cookie" => $cookie,
+		  "user_id" => $user_id
+		  );
 
-  } 	
-	
+  }
+
 }

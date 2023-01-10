@@ -69,7 +69,7 @@ class JSON_API_Users_Controller {
 
       return array( "user" => $current_user );
     } else {
-      global $json_api; 
+      global $json_api;
       $json_api->error(__("No WordPress Users are logged in."));
     }
   }
@@ -128,7 +128,9 @@ class JSON_API_Users_Controller {
     require_once(ABSPATH . WPINC . '/registration.php');
 
     if(isset($_REQUEST['user_password']))
-      $password = $_REQUEST['user_password'];
+      // 保存的密码自动加密
+      // $password = $_REQUEST['user_password'];
+      $password = wp_hash_password($_REQUEST['user_password']);
     else
       $password = wp_generate_password( 12, false );
 
